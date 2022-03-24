@@ -4,17 +4,17 @@ on:
   workflow_call:
     inputs:
       php-version:
+        required: false
+        type: string
         default: 8.0
-        type: string
-        required: false
       node-version:
-        default: 16
-        type: string
         required: false
+        type: string
+        default: 16
 
 jobs:
   build:
-    name: Build Laravel Application
+    name: Build Application
     runs-on: ubuntu-latest
 
     steps:

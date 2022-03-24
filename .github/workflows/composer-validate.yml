@@ -4,9 +4,9 @@ on:
   workflow_call:
     inputs:
       php-version:
-        default: 8.0
         required: false
         type: string
+        default: 8.0
 
 jobs:
   composer:
