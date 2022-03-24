@@ -12,52 +12,53 @@ on:
         type: string
         required: false
 
-runs:
-  name: Build
-  runs-on: ubuntu-latest
+jobs:
+  build:
+    name: Build Laravel Application
+    runs-on: ubuntu-latest
 
-  steps:
-    - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
 
-    - name: Setup PHP and Deployer
-      uses: shivammathur/setup-php@master
-      with:
-        php-version: ${{ inputs.php-version }}
-        coverage: none
-        tools: composer:v2
+      - name: Setup PHP and Deployer
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: ${{ inputs.php-version }}
+          coverage: none
+          tools: composer:v2
 
-    - name: Setup NodeJS and NPM
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ inputs.node-version }}
+      - name: Setup NodeJS and NPM
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ inputs.node-version }}
 
-    - name: Cache node_modules
-      uses: actions/cache@v2
-      with:
-        path: node_modules
-        key: node_modules-${{ hashFiles('package-lock.lock') }}
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('package-lock.lock') }}
 
-    - name: Cache composer dependencies
-      uses: actions/cache@v2
-      with:
-        path: vendor
-        key: composer-${{ hashFiles('composer.lock') }}
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
 
-    - name: Install composer dependencies
-      run: composer install --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader
+      - name: Install composer dependencies
+        run: composer install --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader
 
-    - name: Install node modules
-      run: npm ci
+      - name: Install node modules
+        run: npm ci
 
-    - name: Generate assets
-      run: npm run prod
+      - name: Generate assets
+        run: npm run prod
 
-    - name: Compress the artifact
-      run: zip --symlinks -q -r build.zip . -x "./node_modules/*" "./tests/*" "./.github/*"
+      - name: Compress the artifact
+        run: zip --symlinks -q -r build.zip . -x "./node_modules/*" "./tests/*" "./.github/*"
 
-    - name: Archive the artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: artifact-build
-        path: build.zip
-        retention-days: 1
+      - name: Archive the artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact-build
+          path: build.zip
+          retention-days: 1
