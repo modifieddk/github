@@ -1,0 +1,86 @@
+name: Tests
+
+on:
+  workflow_call:
+    inputs:
+      php-version:
+        required: false
+        type: string
+        default: 8.0
+      runner:
+        required: false
+        type: string
+        default: 'phpunit'
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        # Docker Hub image (also with version)
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: laravel_test
+        ports:
+          - 33306:3306
+        # Set health checks to wait until mysql database has started (it takes some seconds to start)
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.ci', '.env');"
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: ${{ inputs.php-version }}
+          coverage: none
+          extensions: mysql
+          tools: composer:v2, phpunit
+
+      - name: Run composer install
+        run: composer install -n --prefer-dist
+
+      - name: Generate key
+        run: php artisan key:generate
+
+      - name: Run Migrations
+        env:
+          DB_CONNECTION: mysql
+          DB_DATABASE: laravel_test
+          DB_PORT: 33306
+          DB_USER: root
+        run: php artisan migrate
+
+      - name: PHPUnit Tests
+        if: inputs.runner == 'phpunit'
+        run: phpunit --coverage-text
+        env:
+          DB_CONNECTION: mysql
+          DB_DATABASE: laravel_test
+          DB_PORT: 33306
+          DB_USER: root
+
+      - name: Pest Tests
+        if: inputs.runner == 'pest'
+        run: vendor/bin/pest
+        env:
+          DB_CONNECTION: mysql
+          DB_DATABASE: laravel_test
+          DB_PORT: 33306
+          DB_USER: root
