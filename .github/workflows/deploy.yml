@@ -1,0 +1,105 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      php-version:
+        default: 8.0
+        required: false
+      node-version:
+        default: '16'
+        required: false
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: ./.github/workflows/laravel-build
+        with:
+          php-version: {{ inputs.php-version }}
+          node-version: {{ inputs.node-version }}
+
+  deployrc:
+    name: Deploy to RC
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/develop'
+
+    environment:
+      name: rc
+      url: ENTER_RC_URL
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP and Deployer
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: {{ inputs.php-version }}
+          coverage: none
+          tools: deployer:v6.8.0
+
+      - name: Setup SSH connection
+        uses: webfactory/ssh-agent@v0.5.1
+        with:
+          ssh-private-key: ${{ secrets.PRIVATE_KEY }}
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: artifact-build
+
+      - name: Deploy to RC
+        run: |
+          echo '${{ secrets.KNOWN_HOSTS }}' >> ~/.ssh/known_hosts
+          deployer deploy rc -vvv
+
+      - name: Delete artifact
+        if: always()
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: artifact-build
+
+  deployprod:
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/master'
+
+    environment:
+      name: prod
+      url: ENTER_PROD_URL
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP and Deployer
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: {{ inputs.php-version }}
+          coverage: none
+          tools: deployer:v6.8.0
+
+      - name: Setup SSH connection
+        uses: webfactory/ssh-agent@v0.5.1
+        with:
+          ssh-private-key: ${{ secrets.PRIVATE_KEY }}
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: artifact-build
+
+      - name: Deploy to production
+        run: |
+          echo '${{ secrets.KNOWN_HOSTS }}' >> ~/.ssh/known_hosts
+          deployer deploy prod -vvv
+
+      - name: Delete artifact
+        if: always()
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: artifact-build
