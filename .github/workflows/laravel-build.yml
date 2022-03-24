@@ -1,4 +1,5 @@
 name: Build Laravel Application
+
 inputs:
   php-version:
     required: false

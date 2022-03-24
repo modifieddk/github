@@ -19,7 +19,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@master
         with:
-          php-version: {{ inputs.php-version }}
+          php-version: ${{ inputs.php-version }}
           coverage: none
           tools: composer:v2
 
