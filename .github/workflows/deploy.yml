@@ -3,9 +3,6 @@ name: Deploy
 on:
   workflow_call:
     inputs:
-      environment:
-        required: true
-        type: string
       php-version:
         required: false
         type: string
@@ -99,41 +96,3 @@ jobs:
         uses: geekyeggo/delete-artifact@v1
         with:
           name: artifact-build
-
-#   deploy:
-#     name: ${{ inputs.environment }}
-#     runs-on: ubuntu-latest
-#
-#     environment: ${{ inputs.environment }}
-#
-#     steps:
-#       - uses: actions/checkout@v2
-#
-#       - name: Setup PHP and Deployer
-#         uses: shivammathur/setup-php@master
-#         with:
-#           php-version: ${{ inputs.php-version }}
-#           coverage: none
-#           tools: deployer:v6.8.0
-#
-#       - name: Setup SSH connection
-#         uses: webfactory/ssh-agent@v0.5.1
-#         with:
-#           ssh-private-key: ${{ secrets.PRIVATE_KEY }}
-#
-#       - name: Download artifact
-#         uses: actions/download-artifact@v2
-#         with:
-#           name: artifact-build
-#
-#       - name: Add known hosts
-#         run: echo '${{ secrets.KNOWN_HOSTS }}' >> ~/.ssh/known_hosts
-#
-#       - name: Deploy to ${{ inputs.environment }}
-#         run: deployer deploy ${{ inputs.environment }} -vvv
-#
-#       - name: Delete artifact
-#         if: always()
-#         uses: geekyeggo/delete-artifact@v1
-#         with:
-#           name: artifact-build
