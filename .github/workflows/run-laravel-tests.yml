@@ -47,7 +47,7 @@ jobs:
           key: composer-${{ hashFiles('composer.lock') }}
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@master
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ inputs.php-version }}
           coverage: none
