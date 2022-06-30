@@ -1,0 +1,93 @@
+name: Build Application
+
+on:
+  workflow_call:
+    inputs:
+      uses-php:
+        required: true
+        type: boolean
+        default: false
+      uses-composer:
+        required: true
+        type: boolean
+        default: false
+      uses-node:
+        required: true
+        type: boolean
+        default: false
+
+      php-version:
+        required: false
+        type: string
+        default: 8.0
+      composer-version:
+        required: false
+        type: string
+        default: v2
+
+      node-version:
+        required: false
+        type: string
+        default: 16
+      npm-build-command:
+        required: false
+        type: string
+        default: prod
+
+jobs:
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP and Deployer
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: ${{ inputs.php-version }}
+          coverage: none
+          tools: composer:${{ inputs.composer-version }}
+        if: ${{ inputs.uses-php }}
+
+      - name: Setup NodeJS and NPM
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ inputs.node-version }}
+        if: ${{ inputs.uses-node }}
+
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('package-lock.lock') }}
+        if: ${{ inputs.uses-node }}
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+        if: ${{ inputs.uses-composer }}
+
+      - name: Install composer dependencies
+        run: composer install --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader
+        if: ${{ inputs.uses-composer }}
+
+      - name: Install node modules
+        run: npm ci
+        if: ${{ inputs.uses-node }}
+
+      - name: Generate assets
+        run: npm run ${{ inputs.npm-build-command }}
+        if: ${{ inputs.uses-node }}
+
+      - name: Compress the artifact
+        run: zip --symlinks -q -r build.zip . -x "./node_modules/*" "./tests/*" "./.github/*"
+
+      - name: Archive the artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact-build
+          path: build.zip
+          retention-days: 1
