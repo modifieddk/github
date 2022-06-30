@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: 8.0
+      deployer-version:
+        required: false
+        type: string
+        default: v6.8.0
     secrets:
       PRIVATE_KEY:
         required: true
@@ -30,7 +34,7 @@ jobs:
         with:
           php-version: ${{ inputs.php-version }}
           coverage: none
-          tools: deployer:v6.8.0
+          tools: deployer:${{ inputs.deployer-version }}
 
       - name: Setup SSH connection
         uses: webfactory/ssh-agent@v0.5.1
