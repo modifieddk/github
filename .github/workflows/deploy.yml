@@ -7,10 +7,6 @@ on:
         required: false
         type: string
         default: 8.0
-      node-version:
-        required: false
-        type: string
-        default: 16
     secrets:
       PRIVATE_KEY:
         required: true
