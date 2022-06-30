@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - run: echo 'Hi $MIX_APP_URL'
+      - run: echo $MIX_APP_URL
 
       - name: Setup PHP and Deployer
         uses: shivammathur/setup-php@master
