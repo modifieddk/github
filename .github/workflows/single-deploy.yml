@@ -3,14 +3,17 @@ name: Deploy
 on:
   workflow_call:
     inputs:
+      environment:
+        required: true
+        type: string
       php-version:
         required: false
         type: string
-        default: 8.0
+        default: 8.1
       deployer-version:
         required: false
         type: string
-        default: v6.8.0
+        default: v7.0.0
     secrets:
       PRIVATE_KEY:
         required: true
@@ -19,12 +22,11 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  deploy-rc:
-    name: RC
+  deploy:
+    name: ${{ inputs.environment }}
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop'
 
-    environment: rc
+    environment: ${{ inputs.environment }}
 
     steps:
       - uses: actions/checkout@v2
@@ -50,46 +52,7 @@ jobs:
         run: echo '${{ secrets.KNOWN_HOSTS }}' >> ~/.ssh/known_hosts
 
       - name: Deploy to RC
-        run: deployer deploy rc -vvv
-
-      - name: Delete artifact
-        if: always()
-        uses: geekyeggo/delete-artifact@v1
-        with:
-          name: artifact-build
-
-  deploy-prod:
-    name: Production
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
-
-    environment: prod
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup PHP and Deployer
-        uses: shivammathur/setup-php@master
-        with:
-          php-version: ${{ inputs.php-version }}
-          coverage: none
-          tools: deployer:${{ inputs.deployer-version }}
-
-      - name: Setup SSH connection
-        uses: webfactory/ssh-agent@v0.7.0
-        with:
-          ssh-private-key: ${{ secrets.PRIVATE_KEY }}
-
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: artifact-build
-
-      - name: Add known hosts
-        run: echo '${{ secrets.KNOWN_HOSTS }}' >> ~/.ssh/known_hosts
-
-      - name: Deploy to production
-        run: deployer deploy prod -vvv
+        run: deployer deploy ${{ inputs.environment }} -vvv
 
       - name: Delete artifact
         if: always()
