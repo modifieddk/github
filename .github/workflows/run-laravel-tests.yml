@@ -41,7 +41,7 @@ jobs:
         run: php -r "file_exists('.env') || copy('.env.ci', '.env');"
 
       - name: Cache composer dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: vendor
           key: composer-${{ hashFiles('composer.lock') }}
