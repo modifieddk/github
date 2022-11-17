@@ -51,7 +51,7 @@ jobs:
         if: ${{ inputs.uses-php }}
 
       - name: Setup NodeJS and NPM
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ inputs.node-version }}
         if: ${{ inputs.uses-node }}
