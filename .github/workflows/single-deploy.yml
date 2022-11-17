@@ -52,7 +52,7 @@ jobs:
         run: echo '${{ secrets.KNOWN_HOSTS }}' >> ~/.ssh/known_hosts
 
       - name: Deploy to RC
-        run: deployer deploy ${{ inputs.environment }} -vvv
+        run: deployer deploy stage=${{ inputs.environment }} -vvv
 
       - name: Delete artifact
         if: always()
