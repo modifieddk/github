@@ -54,7 +54,7 @@ jobs:
 
       - name: Delete artifact
         if: always()
-        uses: geekyeggo/delete-artifact@v1
+        uses: geekyeggo/delete-artifact@v2
         with:
           name: artifact-build
 
@@ -93,6 +93,6 @@ jobs:
 
       - name: Delete artifact
         if: always()
-        uses: geekyeggo/delete-artifact@v1
+        uses: geekyeggo/delete-artifact@v2
         with:
           name: artifact-build
