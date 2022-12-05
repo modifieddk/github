@@ -13,7 +13,7 @@ on:
       deployer-version:
         required: false
         type: string
-        default: v7.0.0
+        default: v7.0.2
     secrets:
       PRIVATE_KEY:
         required: true
@@ -29,7 +29,7 @@ jobs:
     environment: ${{ inputs.environment }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup PHP and Deployer
         uses: shivammathur/setup-php@master
@@ -56,6 +56,6 @@ jobs:
 
       - name: Delete artifact
         if: always()
-        uses: geekyeggo/delete-artifact@v1
+        uses: geekyeggo/delete-artifact@v2
         with:
           name: artifact-build
