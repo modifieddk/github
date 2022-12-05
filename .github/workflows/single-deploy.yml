@@ -23,7 +23,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   deploy:
-    name: ${{ inputs.environment }}
+    name: Deploy to ${{ inputs.environment }}
     runs-on: ubuntu-latest
 
     environment: ${{ inputs.environment }}
@@ -51,7 +51,7 @@ jobs:
       - name: Add known hosts
         run: echo '${{ secrets.KNOWN_HOSTS }}' >> ~/.ssh/known_hosts
 
-      - name: Deploy to RC
+      - name: Deploy to environment
         run: deployer deploy stage=${{ inputs.environment }} -vvv
 
       - name: Delete artifact
