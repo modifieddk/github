@@ -52,7 +52,7 @@ jobs:
           php-version: ${{ inputs.php-version }}
           coverage: none
           extensions: mysql
-          tools: composer:v2, phpunit
+          tools: composer:v2, phpunit:9
 
       - name: Run composer install
         run: composer install -n --prefer-dist
