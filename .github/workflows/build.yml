@@ -12,11 +12,7 @@ on:
         type: boolean
         default: false
       uses-node:
-        required: false
-        type: boolean
-        default: false
-      uses-yarn:
-        required: false
+        required: true
         type: boolean
         default: false
 
@@ -33,6 +29,10 @@ on:
         required: false
         type: string
         default: 16
+      node-package-manager:
+        required: false
+        type: string
+        default: npm
       npm-build-command:
         required: false
         type: string
@@ -79,20 +79,16 @@ jobs:
         if: ${{ inputs.uses-composer }}
 
       - name: Install node modules
-        run: npm ci
-        if: ${{ inputs.uses-node }}
+        run: ${{ inputs.node-package-manager }} ci
+        if: ${{ inputs.uses-node && inputs.node-package-manager != 'yarn' }}
+
+      - name: Install node modules with Yarn
+        run: ${{ inputs.node-package-manager }}
+        if: ${{ inputs.uses-node && inputs.node-package-manager == 'yarn' }}
 
       - name: Generate assets
-        run: npm run ${{ inputs.npm-build-command }}
+        run: ${{ inputs.node-package-manager }} run ${{ inputs.npm-build-command }}
         if: ${{ inputs.uses-node }}
-
-      - name: Install node modules
-        run: yarn
-        if: ${{ inputs.uses-yarn }}
-
-      - name: Generate assets
-        run: yarn run ${{ inputs.npm-build-command }}
-        if: ${{ inputs.uses-yarn }}
 
       - name: Compress the artifact
         run: zip --symlinks -q -r build.zip . -x "./node_modules/*" "./tests/*" "./.github/*"
