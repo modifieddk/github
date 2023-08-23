@@ -87,11 +87,11 @@ jobs:
         if: ${{ inputs.uses-node }}
 
       - name: Install node modules
-        run: yarn ci
+        run: yarn
         if: ${{ inputs.uses-yarn }}
 
       - name: Generate assets
-        run: yarn ${{ inputs.npm-build-command }}
+        run: yarn run ${{ inputs.npm-build-command }}
         if: ${{ inputs.uses-yarn }}
 
       - name: Compress the artifact
