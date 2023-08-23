@@ -15,6 +15,10 @@ on:
         required: true
         type: boolean
         default: false
+      uses-yarn:
+        required: false
+        type: boolean
+        default: false
 
       php-version:
         required: false
@@ -81,6 +85,14 @@ jobs:
       - name: Generate assets
         run: npm run ${{ inputs.npm-build-command }}
         if: ${{ inputs.uses-node }}
+
+      - name: Install node modules
+        run: yarn ci
+        if: ${{ inputs.uses-yarn }}
+
+      - name: Generate assets
+        run: yarn ${{ inputs.npm-build-command }}
+        if: ${{ inputs.uses-yarn }}
 
       - name: Compress the artifact
         run: zip --symlinks -q -r build.zip . -x "./node_modules/*" "./tests/*" "./.github/*"
