@@ -27,7 +27,7 @@ jobs:
     environment: rc
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup PHP and Deployer
         uses: shivammathur/setup-php@master
@@ -54,7 +54,7 @@ jobs:
 
       - name: Delete artifact
         if: always()
-        uses: geekyeggo/delete-artifact@v1
+        uses: geekyeggo/delete-artifact@v2
         with:
           name: artifact-build
 
@@ -66,7 +66,7 @@ jobs:
     environment: prod
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup PHP and Deployer
         uses: shivammathur/setup-php@master
@@ -93,6 +93,6 @@ jobs:
 
       - name: Delete artifact
         if: always()
-        uses: geekyeggo/delete-artifact@v1
+        uses: geekyeggo/delete-artifact@v2
         with:
           name: artifact-build
