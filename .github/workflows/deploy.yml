@@ -51,11 +51,6 @@ jobs:
 
       - name: Deploy to RC
         run: deployer deploy rc -vvv
-        if: ${{ startsWith(inputs.deployer-version, 'v6') }}
-
-      - name: Deploy to RC
-        run: dep deploy rc -vvv
-        if: ${{ startsWith(inputs.deployer-version, 'v7') }}
 
       - name: Delete artifact
         if: always()
@@ -95,11 +90,6 @@ jobs:
 
       - name: Deploy to production
         run: deployer deploy prod -vvv
-        if: ${{ startsWith(inputs.deployer-version, 'v6') }}
-
-      - name: Deploy to production
-        run: dep deploy prod -vvv
-        if: ${{ startsWith(inputs.deployer-version, 'v7') }}
 
       - name: Delete artifact
         if: always()
