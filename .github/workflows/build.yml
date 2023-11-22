@@ -38,6 +38,10 @@ on:
         type: string
         default: prod
 
+      environment:
+        required: false
+        type: string
+
     secrets:
       sentry-dsn:
         required: false
