@@ -38,15 +38,17 @@ on:
         type: string
         default: prod
 
+      sentry-dsn:
+        required: false
+        type: string
+        default: ''
+
 jobs:
   build:
     name: Build Application
     runs-on: ubuntu-latest
 
     steps:
-      - name: Test
-        run: echo $VITE_TEST
-
       - uses: actions/checkout@v4
 
       - name: Setup PHP and Deployer
@@ -88,6 +90,10 @@ jobs:
       - name: Install node modules with Yarn
         run: ${{ inputs.node-package-manager }}
         if: ${{ inputs.uses-node && inputs.node-package-manager == 'yarn' }}
+
+      - name: Set Sentry DSN in environment
+        run: echo "VITE_SENTRY_DSN_PUBLIC={{ inputs.sentry-dsn }}" >> $GITHUB_ENV
+        if: ${{ inputs.sentry-dsn }}
 
       - name: Generate assets
         run: ${{ inputs.node-package-manager }} run ${{ inputs.npm-build-command }}
