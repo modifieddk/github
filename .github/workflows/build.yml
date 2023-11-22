@@ -38,6 +38,10 @@ on:
         type: string
         default: prod
 
+    secrets:
+      dsn-sentry:
+        required: false
+
 jobs:
   build:
     name: Build Application
