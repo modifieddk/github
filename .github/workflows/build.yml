@@ -87,7 +87,7 @@ jobs:
         if: ${{ inputs.uses-node && inputs.node-package-manager == 'yarn' }}
 
       - name: Set Sentry DSN in environment
-        run: echo "VITE_SENTRY_DSN_PUBLIC={{ inputs.sentry-dsn }}" >> $GITHUB_ENV
+        run: echo "VITE_SENTRY_DSN_PUBLIC={{ secrets.sentry-dsn }}" >> $GITHUB_ENV
         if: ${{ secrets.sentry-dsn }}
 
       - name: Generate assets
