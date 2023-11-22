@@ -38,11 +38,6 @@ on:
         type: string
         default: prod
 
-      sentry-dsn:
-        required: false
-        type: string
-        default: ''
-
 jobs:
   build:
     name: Build Application
@@ -93,7 +88,7 @@ jobs:
 
       - name: Set Sentry DSN in environment
         run: echo "VITE_SENTRY_DSN_PUBLIC={{ inputs.sentry-dsn }}" >> $GITHUB_ENV
-        if: ${{ inputs.sentry-dsn }}
+        if: ${{ secrets.sentry-dsn }}
 
       - name: Generate assets
         run: ${{ inputs.node-package-manager }} run ${{ inputs.npm-build-command }}
