@@ -23,6 +23,8 @@ jobs:
           php-version: ${{ inputs.php-version }}
           coverage: none
           tools: composer:v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Cache composer dependencies
         uses: actions/cache@v3

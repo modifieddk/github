@@ -26,6 +26,8 @@ jobs:
           php-version: ${{ inputs.php-version }}
           coverage: none
           tools: composer:v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Setup NodeJS and NPM
         uses: actions/setup-node@v3
