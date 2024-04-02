@@ -76,7 +76,7 @@ jobs:
 
       - name: PHPUnit Tests
         if: inputs.runner == 'phpunit'
-        run: phpunit --coverage-text
+        run: phpunit --no-coverage
         env:
           DB_CONNECTION: mysql
           DB_DATABASE: laravel_test
