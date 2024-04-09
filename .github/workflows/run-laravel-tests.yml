@@ -6,7 +6,7 @@ on:
       php-version:
         required: false
         type: string
-        default: 8.0
+        default: 8.3
       runner:
         required: false
         type: string
@@ -14,7 +14,7 @@ on:
       phpunit-version:
         required: false
         type: string
-        default: 9
+        default: 11
 
 jobs:
   tests:

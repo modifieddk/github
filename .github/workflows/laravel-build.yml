@@ -6,11 +6,11 @@ on:
       php-version:
         required: false
         type: string
-        default: 8.0
+        default: 8.3
       node-version:
         required: false
         type: string
-        default: 16
+        default: 20
 
 jobs:
   build:

@@ -9,11 +9,11 @@ on:
       php-version:
         required: false
         type: string
-        default: 8.1
+        default: 8.3
       deployer-version:
         required: false
         type: string
-        default: v7.0.2
+        default: v7.x
     secrets:
       PRIVATE_KEY:
         required: true

@@ -19,7 +19,7 @@ on:
       php-version:
         required: false
         type: string
-        default: 8.0
+        default: 8.3
       composer-version:
         required: false
         type: string
@@ -28,7 +28,7 @@ on:
       node-version:
         required: false
         type: string
-        default: 16
+        default: 20
       node-package-manager:
         required: false
         type: string
@@ -36,7 +36,7 @@ on:
       npm-build-command:
         required: false
         type: string
-        default: prod
+        default: build
 
       environment:
         required: false
