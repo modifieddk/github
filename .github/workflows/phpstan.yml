@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: 8.3
+      config-file:
+        required: false
+        type: string
+        default: phpstan.neon
 
 jobs:
   phpstan:
@@ -21,10 +25,8 @@ jobs:
         uses: shivammathur/setup-php@master
         with:
           php-version: ${{ inputs.php-version }}
-          coverage: none
           tools: composer:v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+          coverage: none
 
       - name: Cache composer dependencies
         uses: actions/cache@v4
@@ -35,5 +37,5 @@ jobs:
       - name: Install composer dependencies
         run: composer install -n --prefer-dist
 
-      - name: Run phpstan
-        run: composer phpstan
+      - name: Execute type checking
+        run: vendor/bin/phpstan --configuration=${{ inputs.config-file }}
