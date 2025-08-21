@@ -15,6 +15,10 @@ on:
         required: false
         type: string
         default: 11
+      run-seeder:
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   tests:
@@ -73,6 +77,15 @@ jobs:
           DB_PORT: 33306
           DB_USER: root
         run: php artisan migrate
+
+      - name: Run Seeder
+        if: inputs.run-seeder
+        env:
+          DB_CONNECTION: mysql
+          DB_DATABASE: laravel_test
+          DB_PORT: 33306
+          DB_USER: root
+        run: php artisan db:seed
 
       - name: PHPUnit Tests
         if: inputs.runner == 'phpunit'
